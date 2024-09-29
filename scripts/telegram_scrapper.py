@@ -1,8 +1,9 @@
 import csv, os
+from typing import List
 from telethon import TelegramClient
 from dotenv import load_dotenv
 
-async def scrape_channel(client, channel_username, writer, media_dir):
+async def scrape_channel(client : TelegramClient, channel_username: str, writer: any, media_dir: str):
     """
     This is a function that will write messages found from a telegram channel into a csv file.
 
@@ -27,8 +28,25 @@ async def scrape_channel(client, channel_username, writer, media_dir):
         # Write the channel title along with other data
         writer.writerow([channel_title, channel_username, message.id, message.message, message.date, media_path])
 
-async def obtain_channel_ads():
-    ...
+async def obtain_channel_ads(client: TelegramClient, telegram_channels: List[str], save_path: str):
+    # start up the client
+    await client.start()
+    
+    # Create a directory for media files
+    csv_path = os.path.join(save_path, 'telegram_data.csv')
+    media_dir = os.path.join(save_path, 'media')
+    os.makedirs(media_dir, exist_ok=True)
+
+    # Open the CSV file and prepare the writer
+    with open(csv_path, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['channel_title', 'channel_username', 'id', 'message', 'date', 'media_path']) 
+        
+        # Iterate over channels and scrape data into the single CSV file
+        for channel in telegram_channels:
+            print(f"********** {channel} scrapping started **********")
+            await scrape_channel(client, channel, writer, media_dir)
+            print(f"********** {channel} scrapping finished **********")
 
 if __name__ == "__main__":
     # Load environment variables once
@@ -39,3 +57,19 @@ if __name__ == "__main__":
 
     # Initialize the client once
     client = TelegramClient('scraping_session', api_id, api_hash)
+    print("########## Client Initialization Succcessful ##########")
+
+    # list the channels to be scraped
+    channels = ['@modernshoppingcenter', '@kuruwear', '@classybrands', '@ethio_brand_collection']
+
+    # define the saving path
+    path = './data/'
+
+    with client:
+        client.loop.run_until_complete(
+            obtain_channel_ads(
+                client=client,
+                telegram_channels=channels,
+                save_path=path
+            )
+        )
