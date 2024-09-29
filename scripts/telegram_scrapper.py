@@ -1,4 +1,4 @@
-import csv, os
+import csv, os, argparse
 from typing import List
 from telethon import TelegramClient
 from dotenv import load_dotenv
@@ -8,7 +8,7 @@ async def scrape_channel(client : TelegramClient, channel_username: str, writer:
     This is a function that will write messages found from a telegram channel into a csv file.
 
     Args:
-        client(telethon.TelegramClient): an instance of a telethon TelegramClient instance
+        client(telethon.TelegramClient): an instance of a telethon TelegramClient class
         channel_username(string): the username of a telegram channel, starts with @
         writer(csv.writer): an instance of a csv writer
     Returns:
@@ -16,7 +16,7 @@ async def scrape_channel(client : TelegramClient, channel_username: str, writer:
     """
     entity = await client.get_entity(channel_username)
     channel_title = entity.title  # Extract the channel's title
-    async for message in client.iter_messages(entity, limit=10000):
+    async for message in client.iter_messages(entity, limit=3000):
         media_path = None
         if message.media and hasattr(message.media, 'photo'):
             # Create a unique filename for the photo
@@ -29,6 +29,16 @@ async def scrape_channel(client : TelegramClient, channel_username: str, writer:
         writer.writerow([channel_title, channel_username, message.id, message.message, message.date, media_path])
 
 async def obtain_channel_ads(client: TelegramClient, telegram_channels: List[str], save_path: str):
+    """
+    This is a function that wrappers the scrape_channel function and run it over multiple telegram channels.
+
+    Args:
+        clinet(telethon.TelegramClient): an instance of a telethon TelegramClient class
+        telegram_channels(List[str]): a list of telegram channel usernames
+        save_path(str): the path to the folder to save the scrapping result
+    Returns:
+        None
+    """
     # start up the client
     await client.start()
     
@@ -49,6 +59,19 @@ async def obtain_channel_ads(client: TelegramClient, telegram_channels: List[str
             print(f"********** {channel} scrapping finished **********")
 
 if __name__ == "__main__":
+    # initialize argparse
+    parser = argparse.ArgumentParser(
+        prog='Telegram Channel Scraper',
+        description='Scrapes the messages of telegram channels and images attached to them.'
+    )
+
+    # define arguments for the script
+    parser.add_argument('--path', type=str, default='./data/', help='the path to store the scrapping results')
+    
+    # obtain the passed arguments
+    args = parser.parse_args()
+    path = args.path
+
     # Load environment variables once
     load_dotenv('.env')
     api_id = os.getenv('API_ID')
@@ -61,9 +84,6 @@ if __name__ == "__main__":
 
     # list the channels to be scraped
     channels = ['@modernshoppingcenter', '@kuruwear', '@classybrands', '@ethio_brand_collection']
-
-    # define the saving path
-    path = './data/'
 
     with client:
         client.loop.run_until_complete(
