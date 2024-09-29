@@ -2,7 +2,6 @@ import csv, os
 from telethon import TelegramClient
 from dotenv import load_dotenv
 
-
 async def scrape_channel(client, channel_username, writer, media_dir):
     """
     This is a function that will write messages found from a telegram channel into a csv file.
@@ -28,6 +27,12 @@ async def scrape_channel(client, channel_username, writer, media_dir):
         # Write the channel title along with other data
         writer.writerow([channel_title, channel_username, message.id, message.message, message.date, media_path])
 
+async def obtain_channel_ads():
+    ...
 
 if __name__ == "__main__":
-    ...
+    # Load environment variables once
+    load_dotenv('.env')
+    api_id = os.getenv('TG_API_ID')
+    api_hash = os.getenv('TG_API_HASH')
+    phone = os.getenv('phone')
