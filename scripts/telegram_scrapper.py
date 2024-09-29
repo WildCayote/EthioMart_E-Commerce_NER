@@ -83,7 +83,7 @@ if __name__ == "__main__":
     print("########## Client Initialization Succcessful ##########")
 
     # list the channels to be scraped
-    channels = ['@modernshoppingcenter', '@kuruwear', '@classybrands', '@ethio_brand_collection']
+    channels = ['@modernshoppingcenter', '@kuruwear', '@classybrands']
 
     with client:
         client.loop.run_until_complete(
