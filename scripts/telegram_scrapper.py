@@ -33,6 +33,9 @@ async def obtain_channel_ads():
 if __name__ == "__main__":
     # Load environment variables once
     load_dotenv('.env')
-    api_id = os.getenv('TG_API_ID')
-    api_hash = os.getenv('TG_API_HASH')
-    phone = os.getenv('phone')
+    api_id = os.getenv('API_ID')
+    api_hash = os.getenv('API_HASH')
+    phone_num = os.getenv('PHONE')
+
+    # Initialize the client once
+    client = TelegramClient('scraping_session', api_id, api_hash)
