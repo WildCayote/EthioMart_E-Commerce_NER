@@ -88,3 +88,15 @@ def normalize_char_level_missmatch(input_text: str):
         rep48=re.sub('[ኵ]','ኩ',rep47) #ኩ can be also written as ኵ  
         
         return rep48
+
+def remove_punc_and_special_chars(text: str):
+    """
+    A function that will remove punctuations, this includes amharic punctuations list ፤, ። and ፣.
+
+    Args:
+        text(str): the string from which the punctuations are going to be removed
+    Returns:
+        The text without punctuations
+    """ 
+    normalized_text = re.sub('[\!\@\#\$\%\^\«\»\&\*\(\)\…\[\]\{\}\;\“\”\›\’\‘\"\'\:\,\.\‹\/\<\>\?\\\\|\`\´\~\-\=\+\፡\።\፤\;\፦\፥\፧\፨\፠\፣]', '',text) 
+    return normalized_text
