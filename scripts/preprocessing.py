@@ -30,7 +30,7 @@ def strip_emoji(text: str):
 def normalize_char_level_missmatch(input_text: str):
         """
         A function that normalizes a submitted Amharic text. What is meant by normalizing is to replace 'Fidels' that have the same sound with one standard 'Fidel'.
-        The fidel chosen was at random, since the sounds are the same it doesn't matter which one is chosen.
+        The fidel chosen was at random, since the sounds are the same it doesn't matter which one is chosen. It will also remove extra spaces and new lines.
 
         Args: 
             input_text(str): the Amharic text to be normalized
@@ -87,7 +87,10 @@ def normalize_char_level_missmatch(input_text: str):
         rep47=re.sub('[ቊ]','ቁ',rep46) #ቁ can be written as ቊ
         rep48=re.sub('[ኵ]','ኩ',rep47) #ኩ can be also written as ኵ  
         
-        return rep48
+        # remove extra spaces and newlines
+        result = remove_extra_space(text=rep48)
+
+        return result
 
 def remove_punc_and_special_chars(text: str):
     """
@@ -100,3 +103,21 @@ def remove_punc_and_special_chars(text: str):
     """ 
     normalized_text = re.sub('[\!\@\#\$\%\^\«\»\&\*\(\)\…\[\]\{\}\;\“\”\›\’\‘\"\'\:\,\.\‹\/\<\>\?\\\\|\`\´\~\-\=\+\፡\።\፤\;\፦\፥\፧\፨\፠\፣]', '',text) 
     return normalized_text
+
+def remove_extra_space(text: str):
+    """
+    A function that will remove extra space and newline between words.
+
+    Args:
+        text(str): the string we want to remove extra space and newlines
+    Returns:
+        The text with its extra space and newlines removed
+    """
+
+    # remove extra spaces
+    result = re.sub(pattern='\s+', repl=' ', string=text)
+
+    # remove newlines
+    result = re.sub(pattern='\n', repl=' ', string=result)
+
+    return result
