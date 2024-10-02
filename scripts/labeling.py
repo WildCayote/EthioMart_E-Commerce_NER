@@ -81,7 +81,7 @@ class NERLabeler:
             formated_text = '\n'.join(label)
             result.append(formated_text)
         # join each sentence with a newline in between them
-        result = '\n'.join(result)
+        result = '\n\n'.join(result)
         
         with open(path , 'w', encoding='utf-8') as file:
             file.write(result)
