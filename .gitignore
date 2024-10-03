@@ -5,3 +5,4 @@ data/
 **.session
 **.session-journal
 /data
+/notebooks/training_result
