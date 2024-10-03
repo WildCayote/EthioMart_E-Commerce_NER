@@ -8,3 +8,4 @@ python-dotenv
 telethon
 transformers
 datasets
+scikit-learn
